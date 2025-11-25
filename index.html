@@ -18,18 +18,18 @@
   <meta name="twitter:image" content="preview.png">
 
 
-  <!-- Fonts -->
-  <link rel="icon" type="image/png" href="favicon.png">
+  <!-- Professional Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
   <div class="page">
 
-    <!-- Background for screen only -->
+    <!-- Background for screen -->
     <div class="bg-gradient"></div>
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
@@ -89,18 +89,21 @@
         <header class="invite-hero">
           <div class="hero-overlay"></div>
 
+          <!-- TOP ROW: logo left / badge right -->
           <div class="hero-top">
             <div class="hero-left">
               <img src="Image/PFM_Black.png" alt="PFM-ESCOBAR Logo" class="logo-img small">
               <div class="mono">BARBER SHOP</div>
             </div>
 
-            <div class="hero-badge">
+            <!-- ✅ Badge opposite side of logo (old design) -->
+            <div class="hero-badge" aria-label="1 Year Anniversary">
               <span class="badge-title">1 Year</span>
               <span class="badge-sub">Anniversary</span>
             </div>
           </div>
 
+          <!-- MAIN CONTENT -->
           <div class="hero-content">
             <div class="sparkline"></div>
 
@@ -113,6 +116,7 @@
             <div id="guestName" class="guest-name"></div>
           </div>
 
+          <!-- CHIPS -->
           <div class="hero-bottom">
             <div class="hero-chip">
               <span class="chip-label">Date</span>
@@ -132,7 +136,6 @@
         <!-- BODY -->
         <section class="invite-body">
 
-          <!-- EVENT ADDRESS -->
           <div class="detail">
             <div class="detail-icon">📍</div>
             <div class="detail-text">
@@ -141,7 +144,6 @@
             </div>
           </div>
 
-          <!-- BARBER SHOP ADDRESS -->
           <div class="detail">
             <div class="detail-icon">🏠</div>
             <div class="detail-text">
@@ -150,18 +152,14 @@
             </div>
           </div>
 
-          <!-- PHONE -->
           <div class="detail">
             <div class="detail-icon">📞</div>
             <div class="detail-text">
               <h3>Phone</h3>
-              <p>
-                <a class="link" href="tel:+375296670906">+375 29 667 09 06</a>
-              </p>
+              <p><a class="link" href="tel:+375296670906">+375 29 667 09 06</a></p>
             </div>
           </div>
 
-          <!-- RECEPTION -->
           <div class="detail">
             <div class="detail-icon">🕒</div>
             <div class="detail-text">
@@ -170,7 +168,6 @@
             </div>
           </div>
 
-          <!-- PROGRAM -->
           <div class="detail">
             <div class="detail-icon">🥂</div>
             <div class="detail-text">
@@ -187,7 +184,7 @@
           </div>
         </section>
 
-        <!-- PDF TOOLS (3 icons) -->
+        <!-- PDF TOOLS -->
         <section class="pdf-tools" aria-hidden="true">
           <div class="tools-row">
             <figure class="tool">
@@ -211,10 +208,9 @@
             </div>
             <span class="footer-note">Please confirm your attendance</span>
           </div>
+
           <div class="footer-right">
             <span class="footer-pill">Code verified ✅</span>
-
-            <!-- optional switch guest button if you kept it -->
             <button class="btn ghost small" id="switchGuestBtn" type="button">
               Switch guest
             </button>
