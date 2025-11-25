@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invitation • 1st Anniversary PFM-ESCOBAR</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Background for screen only -->
+    <div class="bg-gradient"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+    <div class="grid-noise"></div>
+    <div class="vignette"></div>
+
+    <!-- LOCK SCREEN -->
+    <section id="lockScreen" class="lock">
+      <div class="lock-card glass">
+        <div class="lock-header">
+          <div class="logo-wrap">
+            <img src="Image/PFM_Black.png" alt="PFM-ESCOBAR Logo" class="logo-img">
+          </div>
+
+          <div class="brand-pill">
+            <span class="dot"></span>
+            PFM-ESCOBAR
+          </div>
+
+          <h1>Private Invitation</h1>
+          <p>
+            This invitation is protected.
+            Please enter your <strong>full name</strong> and your
+            <strong>personal activation code</strong> given by the organizer.
+          </p>
+        </div>
+
+        <form id="unlockForm" class="lock-form" autocomplete="off">
+          <label for="fullNameInput">Full name</label>
+          <input id="fullNameInput" type="text" placeholder="Ex: John Doe" required />
+
+          <label for="codeInput" class="mt">Activation code</label>
+          <div class="input-row">
+            <input id="codeInput" type="text" placeholder="Ex: PFM-2025-003" required />
+            <button class="btn" type="submit">Unlock</button>
+          </div>
+
+          <div class="meta">
+            <span id="attemptsInfo">Attempts left: 3</span>
+            <span class="divider">•</span>
+            <span id="statusInfo" class="status muted">Waiting…</span>
+          </div>
+        </form>
+
+        <div class="lock-footer">
+          <small>If you don’t have a code, please contact the organizer.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVITATION -->
+    <main id="inviteScreen" class="invite hidden" aria-hidden="true">
+      <article class="invite-card glass">
+
+        <!-- HERO -->
+        <header class="invite-hero">
+          <div class="hero-overlay"></div>
+
+          <div class="hero-top">
+            <div class="hero-left">
+              <img src="Image/PFM_Black.png" alt="PFM-ESCOBAR Logo" class="logo-img small">
+              <div class="mono">BARBER SHOP</div>
+            </div>
+
+            <div class="hero-badge">
+              <span class="badge-title">1 Year</span>
+              <span class="badge-sub">Anniversary</span>
+            </div>
+          </div>
+
+          <div class="hero-content">
+            <div class="sparkline"></div>
+
+            <h2>PFM-ESCOBAR</h2>
+            <p class="subtitle">
+              We are celebrating one year of style, precision, and passion.
+              <br/>Your presence will make this day unforgettable.
+            </p>
+
+            <div id="guestName" class="guest-name"></div>
+          </div>
+
+          <div class="hero-bottom">
+            <div class="hero-chip">
+              <span class="chip-label">Date</span>
+              <span class="chip-value">06-12-2025</span>
+            </div>
+            <div class="hero-chip">
+              <span class="chip-label">Place</span>
+              <span class="chip-value">MONACO</span>
+            </div>
+            <div class="hero-chip">
+              <span class="chip-label">Doors open</span>
+              <span class="chip-value">19:30</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- BODY -->
+        <section class="invite-body">
+
+          <!-- EVENT ADDRESS -->
+          <div class="detail">
+            <div class="detail-icon">📍</div>
+            <div class="detail-text">
+              <h3>Event Address</h3>
+              <p>Минск, проспект Победителей, 17</p>
+            </div>
+          </div>
+
+          <!-- BARBER SHOP ADDRESS -->
+          <div class="detail">
+            <div class="detail-icon">🏠</div>
+            <div class="detail-text">
+              <h3>Barber Shop Address</h3>
+              <p>НЕМАНСКАЯ, 20</p>
+            </div>
+          </div>
+
+          <!-- PHONE -->
+          <div class="detail">
+            <div class="detail-icon">📞</div>
+            <div class="detail-text">
+              <h3>Phone</h3>
+              <p>
+                <a class="link" href="tel:+375296670906">+375 29 667 09 06</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- RECEPTION -->
+          <div class="detail">
+            <div class="detail-icon">🕒</div>
+            <div class="detail-text">
+              <h3>Reception</h3>
+              <p>From 19:30 • Dress code: Black & White</p>
+            </div>
+          </div>
+
+          <!-- PROGRAM -->
+          <div class="detail">
+            <div class="detail-icon">🥂</div>
+            <div class="detail-text">
+              <h3>Program</h3>
+              <p>Live cuts • Lounge vibes • Photos • Anniversary toast</p>
+            </div>
+          </div>
+
+          <div class="separator"></div>
+
+          <div class="cta-row">
+            <button class="btn ghost" onclick="window.print()">Download PDF</button>
+            <a class="btn" id="mapsBtn" target="_blank" rel="noreferrer">Open in Maps</a>
+          </div>
+        </section>
+
+        <!-- PDF TOOLS (3 icons) -->
+        <section class="pdf-tools" aria-hidden="true">
+          <div class="tools-row">
+            <figure class="tool">
+              <img src="Image/tools/scissors.png" alt="Scissors">
+            </figure>
+            <figure class="tool">
+              <img src="Image/PFM_Black.png" alt="Razor">
+            </figure>
+            <figure class="tool">
+              <img src="Image/tools/clipper.png" alt="Clipper">
+            </figure>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="invite-footer">
+          <div class="footer-left">
+            <div class="mini-logo">
+              <span class="mini-dot"></span>
+              PFM-ESCOBAR
+            </div>
+            <span class="footer-note">Please confirm your attendance</span>
+          </div>
+          <div class="footer-right">
+            <span class="footer-pill">Code verified ✅</span>
+
+            <!-- optional switch guest button if you kept it -->
+            <button class="btn ghost small" id="switchGuestBtn" type="button">
+              Switch guest
+            </button>
+          </div>
+        </footer>
+
+      </article>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
