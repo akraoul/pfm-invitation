@@ -1,7 +1,6 @@
 /* --------------------------------
    1) CODES D’ACTIVATION (50 codes, +3)
 --------------------------------- */
-
 function generateCodes(count){
   const codes = [];
   for(let i = 1; i <= count; i++){
@@ -15,13 +14,21 @@ function generateCodes(count){
 const VALID_CODES = generateCodes(50);
 const MAX_ATTEMPTS = 3;
 
-// Local storage keys
-const STORAGE_CODES = "pfm_codes_registry";   // { CODE: {name, usedAt} }
-const STORAGE_LOCKED = "pfm_lock_blocked";    // bool
-const STORAGE_LAST_GUEST = "pfm_last_guest";  // string (display name)
+/* --------------------------------
+   2) LOCAL STORAGE KEYS
+--------------------------------- */
+// { CODE: { name, usedAt } }
+const STORAGE_CODES = "pfm_codes_registry";
+// bool
+const STORAGE_LOCKED = "pfm_lock_blocked";
+// last guest session (display name only)
+const STORAGE_LAST_GUEST = "pfm_last_guest";
+// ✅ NEW: last credentials to help reconnect fast
+const STORAGE_LAST_CREDENTIALS = "pfm_last_credentials"; 
+// { nameRaw, codeRaw }
 
 /* --------------------------------
-   2) DOM ELEMENTS
+   3) DOM ELEMENTS
 --------------------------------- */
 const lockScreen     = document.getElementById("lockScreen");
 const inviteScreen   = document.getElementById("inviteScreen");
@@ -34,10 +41,13 @@ const guestNameDiv   = document.getElementById("guestName");
 const mapsBtn        = document.getElementById("mapsBtn");
 const switchGuestBtn = document.getElementById("switchGuestBtn");
 
+// (optionnel) checkbox "remember me" si tu l’ajoutes
+const rememberMeInput = document.getElementById("rememberMe");
+
 let attemptsLeft = MAX_ATTEMPTS;
 
 /* --------------------------------
-   3) HELPERS
+   4) HELPERS
 --------------------------------- */
 function normalizeName(name){
   return name.trim().replace(/\s+/g, " ").toLowerCase();
@@ -53,7 +63,6 @@ function updateAttempts(){
   attemptsInfo.textContent = `Attempts left: ${attemptsLeft}`;
 }
 
-/* Show invitation */
 function showInvite(displayName){
   if(displayName && guestNameDiv){
     guestNameDiv.textContent = `Personal invitation for: ${displayName}`;
@@ -63,7 +72,6 @@ function showInvite(displayName){
   inviteScreen.setAttribute("aria-hidden","false");
 }
 
-/* Registry */
 function getRegistry(){
   try{
     return JSON.parse(localStorage.getItem(STORAGE_CODES)) || {};
@@ -75,7 +83,6 @@ function saveRegistry(reg){
   localStorage.setItem(STORAGE_CODES, JSON.stringify(reg));
 }
 
-/* Attempts */
 function failAttempt(message){
   attemptsLeft--;
   updateAttempts();
@@ -91,19 +98,34 @@ function failAttempt(message){
 }
 
 /* --------------------------------
-   4) MAPS LINK
+   5) MAPS LINK
 --------------------------------- */
 const address = "Минск, проспект Победителей, 17, MONACO";
 mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 /* --------------------------------
-   5) INIT (✅ always start on lock screen)
+   6) SAVE / LOAD LAST CREDENTIALS
+--------------------------------- */
+function saveLastCredentials(nameRaw, codeRaw){
+  // si checkbox existe et n’est pas cochée => ne pas mémoriser
+  if(rememberMeInput && !rememberMeInput.checked) return;
+
+  const payload = { nameRaw, codeRaw };
+  localStorage.setItem(STORAGE_LAST_CREDENTIALS, JSON.stringify(payload));
+}
+
+function loadLastCredentials(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_LAST_CREDENTIALS));
+  }catch{
+    return null;
+  }
+}
+
+/* --------------------------------
+   7) INIT
 --------------------------------- */
 (function init(){
-  // ✅ IMPORTANT:
-  // We ALWAYS reset last guest session on load so refresh returns to lock page.
-  localStorage.removeItem(STORAGE_LAST_GUEST);
-
   const blocked = localStorage.getItem(STORAGE_LOCKED) === "true";
   if(blocked){
     attemptsLeft = 0;
@@ -117,16 +139,21 @@ mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURICompo
 
   attemptsLeft = MAX_ATTEMPTS;
   updateAttempts();
-  setStatus("muted", "Waiting…");
+
+  // ✅ Prefill last guest credentials if exist
+  const lastCreds = loadLastCredentials();
+  if(lastCreds?.nameRaw && lastCreds?.codeRaw){
+    fullNameInput.value = lastCreds.nameRaw;
+    codeInput.value = lastCreds.codeRaw;
+
+    setStatus("ok", "Welcome back! Your details are ready.");
+  }else{
+    setStatus("muted", "Waiting…");
+  }
 })();
 
-/* ✅ Also clear last guest when leaving the page */
-window.addEventListener("beforeunload", ()=>{
-  localStorage.removeItem(STORAGE_LAST_GUEST);
-});
-
 /* --------------------------------
-   6) UNLOCK / RECONNECT LOGIC
+   8) UNLOCK / RECONNECT LOGIC
 --------------------------------- */
 unlockForm.addEventListener("submit", (e)=>{
   e.preventDefault();
@@ -142,7 +169,7 @@ unlockForm.addEventListener("submit", (e)=>{
     return;
   }
 
-  // (A) code must exist
+  // (A) code must be official
   if(!VALID_CODES.includes(code)){
     failAttempt("Invalid activation code.");
     return;
@@ -151,23 +178,25 @@ unlockForm.addEventListener("submit", (e)=>{
   const registry = getRegistry();
   const existing = registry[code];
 
-  // (B) if code linked to another guest → refuse
+  // (B) code linked to another guest => reject
   if(existing && existing.name !== name){
     failAttempt("This code is already linked to another guest.");
     return;
   }
 
-  // (C) if same guest → reconnection OK
+  // (C) same guest => reconnect OK
   if(existing && existing.name === name){
     const displayName = nameRaw.trim();
+
     localStorage.setItem(STORAGE_LAST_GUEST, displayName);
+    saveLastCredentials(nameRaw.trim(), code); // ✅ keep for next time
 
     setStatus("ok", `Welcome back ${displayName} ✨`);
     setTimeout(()=>showInvite(displayName), 450);
     return;
   }
 
-  // (D) first use → bind code + name
+  // (D) first use => bind code + name
   registry[code] = {
     name,
     usedAt: new Date().toISOString()
@@ -177,15 +206,19 @@ unlockForm.addEventListener("submit", (e)=>{
   const displayName = nameRaw.trim();
   localStorage.setItem(STORAGE_LAST_GUEST, displayName);
 
+  // ✅ save for quick reconnection
+  saveLastCredentials(displayName, code);
+
   setStatus("ok", `Welcome ${displayName} ✨`);
   setTimeout(()=>showInvite(displayName), 650);
 });
 
 /* --------------------------------
-   7) SWITCH GUEST (manual return)
+   9) SWITCH GUEST (manual return)
 --------------------------------- */
 if(switchGuestBtn){
   switchGuestBtn.addEventListener("click", ()=>{
+    // on retire la session visible
     localStorage.removeItem(STORAGE_LAST_GUEST);
 
     inviteScreen.classList.add("hidden");
