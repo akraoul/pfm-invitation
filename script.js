@@ -5,16 +5,14 @@
 function generateCodes(count){
   const codes = [];
   for(let i = 1; i <= count; i++){
-    const n = i * 3;                         // suite +3
+    const n = i * 3;                          // suite +3
     const suffix = String(n).padStart(3,"0");// 003, 006, 009...
     codes.push(`PFM-2025-${suffix}`);
   }
   return codes;
 }
 
-// Official codes given by the organizer
 const VALID_CODES = generateCodes(50);
-
 const MAX_ATTEMPTS = 3;
 
 // Local storage keys
@@ -23,7 +21,7 @@ const STORAGE_LOCKED = "pfm_lock_blocked";    // bool
 const STORAGE_LAST_GUEST = "pfm_last_guest";  // string (display name)
 
 /* --------------------------------
-   2) ELEMENTS DOM
+   2) DOM ELEMENTS
 --------------------------------- */
 const lockScreen     = document.getElementById("lockScreen");
 const inviteScreen   = document.getElementById("inviteScreen");
@@ -47,17 +45,15 @@ function normalizeName(name){
 function normalizeCode(code){
   return code.trim().toUpperCase();
 }
-
 function setStatus(type, text){
   statusInfo.className = `status ${type}`;
   statusInfo.textContent = text;
 }
-
 function updateAttempts(){
   attemptsInfo.textContent = `Attempts left: ${attemptsLeft}`;
 }
 
-/* Affiche l’invitation */
+/* Show invitation */
 function showInvite(displayName){
   if(displayName && guestNameDiv){
     guestNameDiv.textContent = `Personal invitation for: ${displayName}`;
@@ -67,7 +63,7 @@ function showInvite(displayName){
   inviteScreen.setAttribute("aria-hidden","false");
 }
 
-/* Charge registre codes */
+/* Registry */
 function getRegistry(){
   try{
     return JSON.parse(localStorage.getItem(STORAGE_CODES)) || {};
@@ -75,12 +71,11 @@ function getRegistry(){
     return {};
   }
 }
-
-/* Sauvegarde registre */
 function saveRegistry(reg){
   localStorage.setItem(STORAGE_CODES, JSON.stringify(reg));
 }
 
+/* Attempts */
 function failAttempt(message){
   attemptsLeft--;
   updateAttempts();
@@ -102,9 +97,13 @@ const address = "Минск, проспект Победителей, 17, MONACO
 mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 /* --------------------------------
-   5) INIT
+   5) INIT (✅ always start on lock screen)
 --------------------------------- */
 (function init(){
+  // ✅ IMPORTANT:
+  // We ALWAYS reset last guest session on load so refresh returns to lock page.
+  localStorage.removeItem(STORAGE_LAST_GUEST);
+
   const blocked = localStorage.getItem(STORAGE_LOCKED) === "true";
   if(blocked){
     attemptsLeft = 0;
@@ -116,18 +115,15 @@ mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURICompo
     return;
   }
 
-  // Si un invité a déjà validé sur ce navigateur,
-  // on peut lui afficher directement l’invitation
-  // mais il peut toujours "Switch guest" pour revenir.
-  const lastGuest = localStorage.getItem(STORAGE_LAST_GUEST);
-  if(lastGuest){
-    showInvite(lastGuest);
-    return;
-  }
-
+  attemptsLeft = MAX_ATTEMPTS;
   updateAttempts();
   setStatus("muted", "Waiting…");
 })();
+
+/* ✅ Also clear last guest when leaving the page */
+window.addEventListener("beforeunload", ()=>{
+  localStorage.removeItem(STORAGE_LAST_GUEST);
+});
 
 /* --------------------------------
    6) UNLOCK / RECONNECT LOGIC
@@ -146,7 +142,7 @@ unlockForm.addEventListener("submit", (e)=>{
     return;
   }
 
-  // (A) le code doit exister dans la liste officielle
+  // (A) code must exist
   if(!VALID_CODES.includes(code)){
     failAttempt("Invalid activation code.");
     return;
@@ -155,13 +151,13 @@ unlockForm.addEventListener("submit", (e)=>{
   const registry = getRegistry();
   const existing = registry[code];
 
-  // (B) si le code est déjà lié à un AUTRE nom → refus
+  // (B) if code linked to another guest → refuse
   if(existing && existing.name !== name){
     failAttempt("This code is already linked to another guest.");
     return;
   }
 
-  // (C) si le code est déjà lié AU MÊME nom → RECONNEXION OK
+  // (C) if same guest → reconnection OK
   if(existing && existing.name === name){
     const displayName = nameRaw.trim();
     localStorage.setItem(STORAGE_LAST_GUEST, displayName);
@@ -171,7 +167,7 @@ unlockForm.addEventListener("submit", (e)=>{
     return;
   }
 
-  // (D) sinon : première utilisation → on lie code + nom
+  // (D) first use → bind code + name
   registry[code] = {
     name,
     usedAt: new Date().toISOString()
@@ -186,19 +182,16 @@ unlockForm.addEventListener("submit", (e)=>{
 });
 
 /* --------------------------------
-   7) SWITCH GUEST (RETURN TO LOCK)
+   7) SWITCH GUEST (manual return)
 --------------------------------- */
 if(switchGuestBtn){
   switchGuestBtn.addEventListener("click", ()=>{
-    // Retire seulement la session de l’invité courant
     localStorage.removeItem(STORAGE_LAST_GUEST);
 
-    // Retour à l’écran de saisie
     inviteScreen.classList.add("hidden");
     inviteScreen.setAttribute("aria-hidden","true");
     lockScreen.classList.remove("hidden");
 
-    // Reset UI
     attemptsLeft = MAX_ATTEMPTS;
     updateAttempts();
     setStatus("muted", "Waiting…");
