@@ -96,7 +96,7 @@
               <div class="mono">BARBER SHOP</div>
             </div>
 
-            <!-- ✅ Badge opposite side of logo (old design) -->
+            <!-- Badge opposite side of logo (old design) -->
             <div class="hero-badge" aria-label="1 Year Anniversary">
               <span class="badge-title">1 Year</span>
               <span class="badge-sub">Anniversary</span>
@@ -178,11 +178,10 @@
 
           <div class="separator"></div>
 
-          <div class="cta-row">
+          <!-- CTA + MAP -->
+          <div class="cta-col">
             <button class="btn ghost" onclick="window.print()">Download PDF</button>
 
-            <!-- ✅ Updated label + safe target/rel 
-                 href is set by script.js -->
             <a
               class="btn"
               id="mapsBtn"
@@ -192,6 +191,18 @@
             >
               Voir SAFARI sur Maps
             </a>
+
+            <!-- ✅ Carte visible -->
+            <div class="map-embed">
+              <iframe
+                id="mapsFrame"
+                title="Map location"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+                src=""
+              ></iframe>
+            </div>
           </div>
         </section>
 
@@ -199,13 +210,13 @@
         <section class="pdf-tools" aria-hidden="true">
           <div class="tools-row">
             <figure class="tool">
-              <img src="Image/Scissors.png" alt="Scissors">
+              <img src="Image/scissors.png" alt="Scissors">
             </figure>
             <figure class="tool">
               <img src="Image/PFM_Black.png" alt="Razor">
             </figure>
             <figure class="tool">
-              <img src="Image/Clipper.png" alt="Clipper">
+              <img src="Image/clipper.png" alt="Clipper">
             </figure>
           </div>
         </section>
