@@ -98,9 +98,11 @@ function failAttempt(message){
 }
 
 /* --------------------------------
-   5) MAPS LINK
+   5) MAPS LINK (UPDATED)
+   Lieu: SAFARI
+   Adresse: ZYBITSKAYA, 23
 --------------------------------- */
-const address = "Минск, проспект Победителей, 17, MONACO";
+const address = "SAFARI, ZYBITSKAYA, 23";
 mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 /* --------------------------------
