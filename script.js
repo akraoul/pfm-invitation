@@ -5,7 +5,7 @@ function generateCodes(count){
   const codes = [];
   for(let i = 1; i <= count; i++){
     const n = i * 3;                          // suite +3
-    const suffix = String(n).padStart(3,"0"); // 003, 006, 009...
+    const suffix = String(n).padStart(3,"0");// 003, 006, 009...
     codes.push(`PFM-2025-${suffix}`);
   }
   return codes;
@@ -98,16 +98,25 @@ function failAttempt(message){
 }
 
 /* --------------------------------
-   5) MAPS LINK (UPDATED)
-   - Lieu affiché sur la carte: SAFARI
-   - Adresse affichée sur la carte: ZYBITSKAYA, 23
+   5) MAPS LINK (UPDATED + EMBED)
+   - Place affiché sur la carte: SAFARI
+   - Adresse affichée: ZYBITSKAYA, 23
    - Localisation réelle Maps: Кирила и Мефодия 8
 --------------------------------- */
 const mapsAddress = "Кирила и Мефодия 8";
+
+// Bouton Maps
 if(mapsBtn){
-  mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsAddress)}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsAddress)}`;
+  mapsBtn.href = mapsUrl;
   mapsBtn.setAttribute("target", "_blank");
   mapsBtn.setAttribute("rel", "noopener noreferrer");
+}
+
+// Iframe Maps visible
+const mapsFrame = document.getElementById("mapsFrame");
+if(mapsFrame){
+  mapsFrame.src = `https://www.google.com/maps?q=${encodeURIComponent(mapsAddress)}&output=embed`;
 }
 
 /* --------------------------------
